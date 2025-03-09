@@ -5,6 +5,7 @@ class CrewMember:
         self.ship = ship
         self.position = position
         self.task = "Idle"
+        self.symbol = "0"
 
     def assign_task(self, task):
         """Assigns a task to the crew member."""
@@ -37,3 +38,7 @@ class Medic(CrewMember):
     def perform_task(self):
         if self.task == "heal":
             print(f"{self.name} is healing injured crew members.")
+
+class Offduty(CrewMember):
+    def __init__(self, name, ship, position):
+        super().__init__(name, "Off duty", ship, position)

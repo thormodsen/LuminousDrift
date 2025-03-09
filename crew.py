@@ -1,5 +1,5 @@
 import curses
-from roles import Pilot, Engineer, Medic
+from roles import Offduty, Engineer, Medic, Pilot
 
 class Crew:
     def __init__(self, ship):
@@ -10,9 +10,9 @@ class Crew:
 
     def initialize_crew(self):
         """Starts with 3 crew members and assigns default roles."""
-        self.members.append(Medic("Alice", self.ship, (3, 5)))
-        self.members.append(Medic("Bob", self.ship, (4, 6)))
-        self.members.append(Medic("Charlie", self.ship, (5, 7)))
+        lounge_position = self.ship.room_positions["lounge"]
+        self.members.append(Offduty("Alice", self.ship, lounge_position))
+        self.members.append(Medic("Bob", self.ship, lounge_position))
 
     def select_crew_member(self, index):
         """Selects a crew member by index (1-9)."""
@@ -25,9 +25,10 @@ class Crew:
         position = self.members[self.selected_index].position
 
         role_map = {
-            'p': Pilot,
+            'o': Offduty,
             'e': Engineer,
-            'm': Medic
+            'm': Medic,
+            'p': Pilot
         }
 
         if role_letter in role_map:
@@ -48,6 +49,7 @@ class Crew:
             marker = ">" if i == self.selected_index else " "
             style = curses.A_BOLD if i == self.selected_index else curses.A_NORMAL
             stdscr.addstr(pos + 1 + i, 2, f"{marker} {i+1}. {member.name} ({member.role}) - Task: {member.task}", style)
+
 
     def count_roles(self):
         """Counts how many crew members are assigned to each role."""

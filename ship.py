@@ -2,19 +2,36 @@ import curses
 from crew import Crew   
 from travel_system import TravelSystem
 
-
 class Ship:
     def __init__(self):
+        self.ship_y = 0  # Will be set dynamically
+        self.ship_x = 0
+
         self.layout = [
             "##############################",
-            "#.                           #",
-            "#    ####  ############      #",
+            "#                            #",
+            "#    ##L   L###########      #",
             "#    #        #       #      #",
             "#    #        #       #      #",
-            "#    ############  ####      #",
-            "#.                           #",
+            "#    ###########M  M###      #",
+            "#                            #",
+            "#                            #",
+            "#    ###C  C###########      #",
+            "#    #        #       #      #",
+            "#    #        #       #      #",
+            "#    ###########E  E###      #",
+            "#                            #",
             "##############################"
         ]
+
+        self.room_positions = {
+            "lounge": (5, 10),     # Lounge (starting position)
+            "cockpit": (2, 30),    # Where pilots should go
+            "engine_room": (10, 5), # Where engineers should go
+            "medbay": (7, 20)      # Where medics should go
+}
+
+
         self.distance_traveled = 0  
         self.speed = 0  
         self.max_speed = 10  
@@ -27,21 +44,13 @@ class Ship:
         self.current_location = "Starting Point"
         self.travel_system = TravelSystem(self)
 
-
         self.crew = Crew(self)  # Initialize crew
 
 
     def update(self):
-        """Updates the ship's travel progress and engine heat."""
-        self.distance_traveled += self.speed  # Increase distance based on speed
-
         # Apply role benefits
         self.apply_role_bonuses()
         self.crew.update()  # Update crew actions
-
-
-
-
 
     def display_status(self, stdscr, pos):
         """Displays ship status (fuel, hull, location)."""
@@ -86,6 +95,7 @@ class Ship:
 
 
     def draw(self, stdscr):
+        """Draws the ship on the screen."""
         height, width = stdscr.getmaxyx()
         self.ship_y = height // 2 - len(self.layout) // 2
         self.ship_x = width // 2 - len(self.layout[0]) // 2
@@ -93,7 +103,22 @@ class Ship:
         for i, row in enumerate(self.layout):
             stdscr.addstr(self.ship_y + i, self.ship_x, row)
 
+        """Update the room positions"""
+        self.update_room_positions()        
 
+        """Draws crew members on the screen."""
+        for member in self.crew.members:
+            y, x = self.room_positions["lounge"]
+            stdscr.addstr(y, x, member.symbol)
+
+    def update_room_positions(self):
+        """Updates room positions based on where the ship is drawn on the screen."""
+        self.room_positions = {
+            "lounge": (self.ship_y + 3, self.ship_x + 8),
+            "cockpit": (self.ship_y + 10, self.ship_x + 8),
+            "engine_room": (self.ship_y + 10, self.ship_x + 15),
+            "medbay": (self.ship_y + 3, self.ship_x + 16)
+    }
 
     def is_walkable(self, y, x):
         """Check if the position is walkable (empty space)"""
