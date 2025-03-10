@@ -1,5 +1,5 @@
 import random
-from pathfinding import Pathfinding
+from helperclasses import Pathfinding
 
 class Maintenance:
     def __init__(self, ship, crew):

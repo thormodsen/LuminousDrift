@@ -1,4 +1,26 @@
 import heapq
+import curses
+
+class StatusMessageDisplay:
+    def __init__(self, max_messages=20, width=45):
+        self.messages = []
+        self.max_messages = max_messages
+        self.width = width
+    
+    def add_message(self, message):
+        """Adds a new message to the debug log."""
+        if len(self.messages) >= self.max_messages:
+            self.messages.pop(0)  # Remove the oldest message
+        self.messages.append(message)
+    
+    def draw(self, stdscr, start_x, start_y):
+        """Draws the debug messages on the right side of the screen."""
+        stdscr.addstr(start_y, start_x, "DEBUG LOG:", curses.A_BOLD)
+        for i, message in enumerate(self.messages[-self.max_messages:]):
+            stdscr.addstr(start_y + 1 + i, start_x, f"> {message[:self.width]}")
+
+# Global instance for debug logging
+status_display = StatusMessageDisplay() 
 
 class Pathfinding:
     def __init__(self, ship):
@@ -43,3 +65,5 @@ class Pathfinding:
                     heapq.heappush(open_set, (f_score[neighbor], neighbor))
 
         return []  # No valid path found
+    
+

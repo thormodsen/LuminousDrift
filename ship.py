@@ -25,11 +25,11 @@ class Ship:
         ]
 
         self.room_positions = {
-            "lounge": (5, 10),     # Lounge (starting position)
-            "cockpit": (2, 30),    # Where pilots should go
-            "engine_room": (10, 5), # Where engineers should go
-            "medbay": (7, 20)      # Where medics should go
-}
+            "lounge": (0, 0),
+            "pilot": (0, 0),
+            "engineer": (0, 0),
+            "medic": (0, 0)
+        }
 
 
         self.distance_traveled = 0  
@@ -46,10 +46,9 @@ class Ship:
 
         self.crew = Crew(self)  # Initialize crew
 
-
     def update(self):
         # Apply role benefits
-        self.apply_role_bonuses()
+        #self.apply_role_bonuses()
         self.crew.update()  # Update crew actions
 
     def display_status(self, stdscr, pos):
@@ -58,8 +57,40 @@ class Ship:
         stdscr.addstr(pos+1, 2, f"🔋 Fuel: {self.fuel}/100     🛠 Hull: {self.hull_integrity}/100")
         stdscr.addstr(pos+2, 2, f"📍 Location: {self.current_location}")
 
+
+    def draw(self, stdscr):
+        """Draws the ship on the screen."""
+        height, width = stdscr.getmaxyx()
+        self.ship_y = height // 2 - len(self.layout) // 2
+        self.ship_x = width // 2 - len(self.layout[0]) // 2
+
+        for i, row in enumerate(self.layout):
+            stdscr.addstr(self.ship_y + i, self.ship_x, row)
+
+        """Update the room positions"""
+        self.update_room_positions()
+
+        """Draws crew members on the screen."""
+        for member in self.crew.members:
+            stdscr.addstr(member.position[0], member.position[1], member.symbol)
+
+    def update_room_positions(self):
+        """Updates room positions based on where the ship is drawn on the screen."""
+        self.room_positions = {
+            "lounge": (self.ship_y + 3, self.ship_x + 8),
+            "cockpit": (self.ship_y + 10, self.ship_x + 8),
+            "engine_room": (self.ship_y + 10, self.ship_x + 15),
+            "medbay": (self.ship_y + 3, self.ship_x + 16)
+    }
+
+    def is_walkable(self, y, x):
+        """Check if the position is walkable (empty space)"""
+        return self.layout[y][x] == ' '  
+    
+
+"""
     def apply_role_bonuses(self):
-        """Applies bonuses based on crew roles."""
+        
         role_counts = self.crew.count_roles()
 
         # Pilot Effects
@@ -92,34 +123,4 @@ class Ship:
         if role_counts["Researcher"] >= 2:
             self.research_speed *= 1.5  # Faster research
 
-
-
-    def draw(self, stdscr):
-        """Draws the ship on the screen."""
-        height, width = stdscr.getmaxyx()
-        self.ship_y = height // 2 - len(self.layout) // 2
-        self.ship_x = width // 2 - len(self.layout[0]) // 2
-
-        for i, row in enumerate(self.layout):
-            stdscr.addstr(self.ship_y + i, self.ship_x, row)
-
-        """Update the room positions"""
-        self.update_room_positions()        
-
-        """Draws crew members on the screen."""
-        for member in self.crew.members:
-            y, x = self.room_positions["lounge"]
-            stdscr.addstr(y, x, member.symbol)
-
-    def update_room_positions(self):
-        """Updates room positions based on where the ship is drawn on the screen."""
-        self.room_positions = {
-            "lounge": (self.ship_y + 3, self.ship_x + 8),
-            "cockpit": (self.ship_y + 10, self.ship_x + 8),
-            "engine_room": (self.ship_y + 10, self.ship_x + 15),
-            "medbay": (self.ship_y + 3, self.ship_x + 16)
-    }
-
-    def is_walkable(self, y, x):
-        """Check if the position is walkable (empty space)"""
-        return self.layout[y][x] == ' '  
+"""

@@ -1,11 +1,19 @@
+from helperclasses import Pathfinding
+
 class CrewMember:
     def __init__(self, name, role, ship, position):
+        self.ship = ship
+        self.pathfinder = Pathfinding(ship)
+        self.path = []  # Holds the computed path
+
         self.name = name
         self.role = role
-        self.ship = ship
         self.position = position
         self.task = "Idle"
-        self.symbol = "0"
+        self.symbol = "@"
+
+    def assign_role(self, new_role):
+        self.role = new_role
 
     def assign_task(self, task):
         """Assigns a task to the crew member."""
@@ -14,6 +22,15 @@ class CrewMember:
     def perform_task(self):
         """Override this method in subclasses."""
         pass
+
+    def follow_path(self):
+        #Move along the computed path
+        if self.path:
+            next_position = self.path.pop(0)
+            self.position = next_position
+        else:
+            self.task = "No path"
+
 
 class Pilot(CrewMember):
     def __init__(self, name, ship, position):
@@ -36,9 +53,15 @@ class Medic(CrewMember):
         super().__init__(name, "Medic", ship, position)
 
     def perform_task(self):
-        if self.task == "heal":
-            print(f"{self.name} is healing injured crew members.")
+        if self.task in ["Idle"]:
+            if self.position != self.ship.room_positions["medbay"]:
+                self.path = self.pathfinder.find_path(self.position, self.ship.room_positions["medbay"])
+                self.assign_task("Going_to_medbay")
+
+        elif self.task in ["Going_to_medbay"]:
+            self.follow_path()
+        
 
 class Offduty(CrewMember):
     def __init__(self, name, ship, position):
-        super().__init__(name, "Off duty", ship, position)
+        super().__init__(name, "Offduty", ship, position)
