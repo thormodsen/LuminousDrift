@@ -1,5 +1,6 @@
 import curses
 from ship import Ship
+from ui import ShipView, StatusView
 from helperclasses import status_display
 
 def main(stdscr):
@@ -7,50 +8,36 @@ def main(stdscr):
     stdscr.nodelay(1)   # Non-blocking input
     stdscr.timeout(100) # Set input timeout
 
-    height, width = stdscr.getmaxyx()
-    
     ship = Ship()
+    ship_view = ShipView(ship)
+    status_view = StatusView(ship, status_display)
 
-    # Add some test messages
     status_display.add_message("Game Started")
-    
+
     while True:
         stdscr.clear()
-        
-        ship.update() # updates to the ship
-        ship.draw(stdscr) # draw ship layout
-        
-        # Display UI sections
-        ship.display_status(stdscr, 1)
-        ship.crew.display_crew_members(stdscr, 5)
-        #ship.travel_system.display_jump_options(stdscr, 10)
-        status_display.draw(stdscr, width - 50, 1) #debug console
-        
+        ship.update()
+        ship_view.render(stdscr)
+        status_view.render(stdscr)
         stdscr.refresh()
-        
-        # Collect and interpret player input
+
         key = stdscr.getch()
         if key == ord('q'):
             break
-        elif key == ord('w'):  # Move selection up
+        elif key == ord('w'):
             ship.travel_system.select_jump(-1)
-        elif key == ord('s'):  # Move selection down
+        elif key == ord('s'):
             ship.travel_system.select_jump(1)
-        elif key == ord('j'):  # Execute jump
+        elif key == ord('j'):
             message = ship.travel_system.execute_jump()
             if message:
                 stdscr.addstr(14, 2, message, curses.A_BOLD)
-
-        elif ord('1') <= key <= ord('9'):  # Select crew member (1-9)
+        elif ord('1') <= key <= ord('9'):
             ship.crew.select_crew_member(key - ord('1'))
-        elif key in [ord('p'), ord('e'), ord('m'), ord('o')]:  # Assign role
+        elif key in [ord('p'), ord('e'), ord('m'), ord('o')]:
             ship.crew.assign_role(chr(key))
         else:
             pass
 
-        
 if __name__ == "__main__":
     curses.wrapper(main)
-
-
-

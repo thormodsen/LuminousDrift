@@ -1,12 +1,10 @@
-import curses
-from crew import Crew   
+from crew import Crew
 from travel_system import TravelSystem
 
 class Ship:
     def __init__(self):
         self.ship_y = 0  # Will be set dynamically
         self.ship_x = 60
-
         self.layout = [
             "0123456789012345678901234567890",
             "1##############################",
@@ -34,9 +32,9 @@ class Ship:
             "medbay": (self.ship_y + 4, self.ship_x + 18)
         }
 
-        self.distance_traveled = 0  
-        self.speed = 0  
-        self.max_speed = 10  
+        self.distance_traveled = 0
+        self.speed = 0
+        self.max_speed = 10
         self.evasion = 0  # Evasive maneuvers effect
         self.auto_repair = False  # Engineer auto-repair
         self.early_hazard_warning = False  # Radar Operator effect
@@ -46,25 +44,16 @@ class Ship:
         self.current_location = "Starting Point"
 
         self.travel_system = TravelSystem(self)
-        self.crew = Crew(self)  # Initialize crew
+        self.crew = Crew(self)
 
     def update(self):
-        self.crew.update()  # Update crew actions
+        """Update the ship's state, including crew tasks."""
+        self.crew.update()
 
-    def display_status(self, stdscr, pos):
-        """Displays ship status (fuel, hull, location)."""
-        stdscr.addstr(pos,   2,  "📊 Ship Status", curses.A_BOLD)
-        stdscr.addstr(pos+1, 2, f"🔋 Fuel: {self.fuel}/100     🛠 Hull: {self.hull_integrity}/100")
-        stdscr.addstr(pos+2, 2, f"📍 Location: {self.current_location}")
-
-    def draw(self, stdscr):
-        for i, row in enumerate(self.layout):
-            stdscr.addstr(self.ship_y + i, self.ship_x, row)
-
-        """Draws crew members on the screen."""
-        for member in self.crew.members:
-            stdscr.addstr(member.position[0], member.position[1], member.symbol)
+    def get_layout(self):
+        """Return the ship's layout along with its top-left position."""
+        return self.layout, self.ship_y, self.ship_x
 
     def is_walkable(self, y, x):
-        """Check if the position is walkable (empty space)"""
-        return self.layout[y][x] == ' '  
+        """Check if the given position is walkable (i.e., an empty space)."""
+        return self.layout[y][x] == ' '
