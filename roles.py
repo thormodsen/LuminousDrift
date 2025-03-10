@@ -57,8 +57,6 @@ class Medic(CrewMember):
         if self.task in ["Idle"]:
             if self.position != self.ship.room_positions["medbay"]:
                 self.path = self.pathfinder.find_path(self.position, self.ship.room_positions["medbay"])
-                status_display.add_message(f"Go to medbay; {self.position} - {self.ship.room_positions['medbay']}")
-                status_display.add_message(self.path)
                 self.task = "Going_to_medbay"
         
         elif self.task in ["Going_to_medbay"]:
