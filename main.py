@@ -16,19 +16,19 @@ def main(stdscr):
     
     while True:
         stdscr.clear()
-        status_display.draw(stdscr, width - 50, 1)
         
-        # Draw ship layout
-        ship.draw(stdscr)
-        ship.update()
+        ship.update() # updates to the ship
+        ship.draw(stdscr) # draw ship layout
         
         # Display UI sections
         ship.display_status(stdscr, 1)
         ship.crew.display_debug_crew_members(stdscr, 5)
         #ship.travel_system.display_jump_options(stdscr, 10)
+        status_display.draw(stdscr, width - 50, 1) #debug console
         
         stdscr.refresh()
         
+        # Collect and interpret player input
         key = stdscr.getch()
         if key == ord('q'):
             break
@@ -51,5 +51,6 @@ def main(stdscr):
         
 if __name__ == "__main__":
     curses.wrapper(main)
+    
 
 

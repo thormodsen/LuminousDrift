@@ -15,7 +15,6 @@ class Crew:
         self.members.append(Offduty("Alice", self.ship, lounge_position))
         self.members.append(Offduty("Bob", self.ship, lounge_position))
         
-
     def select_crew_member(self, index):
         """Selects a crew member by index (1-9)."""
         if 0 <= index < len(self.members):
