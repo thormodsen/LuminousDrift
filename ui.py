@@ -28,10 +28,11 @@ class StatusView:
             # Render ship status
             window.addstr(1, 0, "🚀 Ship Status", curses.A_BOLD)
             window.addstr(2, 2, f"Fuel: {self.ship.fuel}/100  Hull: {self.ship.hull_integrity}/100")
-            window.addstr(3, 2, f"Location: {self.ship.current_location}")
+            window.addstr(3, 2, f"Food: {self.ship.food_storage:.0f}")
+            window.addstr(4, 2, f"Location: {self.ship.current_location}")
 
             # Render crew status
-            pos = 5
+            pos = 6
             window.addstr(pos, 0, "👻 Crew Status", curses.A_BOLD)
             for i, member in enumerate(self.ship.crew.members):
                 marker = ">" if i == self.ship.crew.selected_index else " "

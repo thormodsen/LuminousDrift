@@ -69,6 +69,8 @@ class Offduty(CrewMember):
 
 
 class Provisioner(CrewMember):
+    BASE_PRODUCTION_RATE = 0.5  # Food units per provisioner per second
+
     def __init__(self, name, ship, position):
         super().__init__(name, "Provisioner", ship, position)
         self.symbol = "P"  # Distinct symbol for the Provisioner
@@ -116,5 +118,5 @@ class Provisioner(CrewMember):
         self.has_greens = False
         # Update the ship's food inventory, if applicable.
         if hasattr(self.ship, "add_food"):
-            self.ship.add_food(5)  # Example: add 5 food units
+            self.ship.add_food(self.BASE_PRODUCTION_RATE)  # Example: add 5 food units
         self.task = "Idle"

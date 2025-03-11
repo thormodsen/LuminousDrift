@@ -49,7 +49,7 @@ class Pathfinding:
         g_score = {start: 0}
         f_score = {start: heuristic(start, goal)}
 
-        status_display.add_message(f"Finding path from {start} to {goal}")
+        #status_display.add_message(f"Finding path from {start} to {goal}")
 
         while open_set:
             _, current = heapq.heappop(open_set)

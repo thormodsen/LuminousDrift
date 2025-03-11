@@ -32,23 +32,39 @@ class Ship:
             "medbay": (self.ship_y + 4, self.ship_x + 18)
         }
 
-        self.distance_traveled = 0
-        self.speed = 0
-        self.max_speed = 10
-        self.evasion = 0  # Evasive maneuvers effect
-        self.auto_repair = False  # Engineer auto-repair
-        self.early_hazard_warning = False  # Radar Operator effect
-        self.threat_assessment = False  # Radar Operator level 2 effect
+        #self.distance_traveled = 0
+        #self.speed = 0
+        #self.max_speed = 10
+        #self.evasion = 0  # Evasive maneuvers effect
+        #self.auto_repair = False  # Engineer auto-repair
+        #self.early_hazard_warning = False  # Radar Operator effect
+        #self.threat_assessment = False  # Radar Operator level 2 effect
         self.fuel = 50  # Initial fuel amount
         self.hull_integrity = 100  # Initial hull health
+        self.food_storage = 10
         self.current_location = "Starting Point"
-
         self.travel_system = TravelSystem(self)
         self.crew = Crew(self)
 
     def update(self):
         """Update the ship's state, including crew tasks."""
+        self.consume_food(len(self.crew.members))
         self.crew.update()
+
+    def add_food(self, amount):
+        self.food_storage += amount
+        #status_display.add_message(f"Food storage updated: {self.food_storage:.2f}")
+
+    def consume_food(self, crew_count):
+        required_food = crew_count/200
+        if self.food_storage >= required_food:
+            self.food_storage -= required_food
+            #status_display.add_message(f"{crew_count} food consumed. Food left: {self.food_storage:.2f}")
+            return True
+        else:
+            #status_display.add_message("Food shortage! Crew effectiveness reduced.")
+            self.food_storage = 0
+            return False
 
     def get_layout(self):
         """Return the ship's layout along with its top-left position."""
