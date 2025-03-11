@@ -8,7 +8,7 @@ def main(stdscr):
     stdscr.nodelay(1)   # Non-blocking input
     stdscr.timeout(100) # Set input timeout
 
-    ship = Ship()
+    ship = Ship() #test ship
     ship_view = ShipView(ship)
     status_view = StatusView(ship, status_display)
 
