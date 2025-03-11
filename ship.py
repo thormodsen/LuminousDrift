@@ -56,7 +56,7 @@ class Ship:
         #status_display.add_message(f"Food storage updated: {self.food_storage:.2f}")
 
     def consume_food(self, crew_count):
-        required_food = crew_count/200
+        required_food = crew_count/1000
         if self.food_storage >= required_food:
             self.food_storage -= required_food
             #status_display.add_message(f"{crew_count} food consumed. Food left: {self.food_storage:.2f}")

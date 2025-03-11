@@ -69,7 +69,8 @@ class Offduty(CrewMember):
 
 
 class Provisioner(CrewMember):
-    BASE_PRODUCTION_RATE = 0.5  # Food units per provisioner per second
+    BASE_PRODUCTION_RATE = 1  # Food units per provisioner per second
+    greens_collected = 0
 
     def __init__(self, name, ship, position):
         super().__init__(name, "Provisioner", ship, position)
@@ -109,14 +110,22 @@ class Provisioner(CrewMember):
                 self.task = "Idle"  # Arrived; next tick will trigger processing
 
     def gather_greens(self):
-        print(f"{self.name} is gathering greens in the garden.")
-        self.has_greens = True
-        self.task = "Idle"
+        #print(f"{self.name} is gathering greens in the garden.")
+        if self.greens_collected < 10:
+            self.greens_collected += 1
+            #status_display.add_message(f"{self.name} collected greens: {self.greens_collected}")
+        else:
+            self.has_greens = True
+            self.task = "Idle"
 
     def process_food(self):
-        print(f"{self.name} is processing greens into food in the kitchen.")
-        self.has_greens = False
-        # Update the ship's food inventory, if applicable.
-        if hasattr(self.ship, "add_food"):
-            self.ship.add_food(self.BASE_PRODUCTION_RATE)  # Example: add 5 food units
-        self.task = "Idle"
+        #print(f"{self.name} is processing greens into food in the kitchen.")
+        if self.greens_collected > 0:
+            self.greens_collected -= 1
+            #status_display.add_message(f"{self.name} processed greens: {self.greens_collected}")
+        else:
+            # Update the ship's food inventory, if applicable.
+            if hasattr(self.ship, "add_food"):
+                self.ship.add_food(self.BASE_PRODUCTION_RATE)  # Example: add 5 food units
+            self.has_greens = False
+            self.task = "Idle"
