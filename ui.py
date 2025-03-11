@@ -25,9 +25,19 @@ class StatusView:
 
     def render(self, window):
         try:
-            window.addstr(1, 2, "Ship Status", curses.A_BOLD)
+            # Render ship status
+            window.addstr(1, 0, "🚀 Ship Status", curses.A_BOLD)
             window.addstr(2, 2, f"Fuel: {self.ship.fuel}/100  Hull: {self.ship.hull_integrity}/100")
             window.addstr(3, 2, f"Location: {self.ship.current_location}")
+
+            # Render crew status
+            pos = 5
+            window.addstr(pos, 0, "👻 Crew Status", curses.A_BOLD)
+            for i, member in enumerate(self.ship.crew.members):
+                marker = ">" if i == self.ship.crew.selected_index else " "
+                style = curses.A_BOLD if i == self.ship.crew.selected_index else curses.A_NORMAL
+                window.addstr(pos + 1 + i, 2, f"{marker} {i+1}. {member.name} ({member.role}) - Task: {member.task}", style)
+            
             # Render the debug log on the right:
             self.status_display.draw(window, window.getmaxyx()[1] - 50, 1)
         except curses.error:

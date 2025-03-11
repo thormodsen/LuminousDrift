@@ -27,8 +27,8 @@ class Ship:
 
         self.room_positions = {
             "lounge": (self.ship_y + 4, self.ship_x + 10),
-            "cockpit": (self.ship_y + 10, self.ship_x + 8),
-            "engine_room": (self.ship_y + 10, self.ship_x + 15),
+            "kitchen": (self.ship_y + 11, self.ship_x + 10),
+            "garden": (self.ship_y + 11, self.ship_x + 18),
             "medbay": (self.ship_y + 4, self.ship_x + 18)
         }
 

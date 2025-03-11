@@ -66,3 +66,55 @@ class Medic(CrewMember):
 class Offduty(CrewMember):
     def __init__(self, name, ship, position):
         super().__init__(name, "Offduty", ship, position)
+
+
+class Provisioner(CrewMember):
+    def __init__(self, name, ship, position):
+        super().__init__(name, "Provisioner", ship, position)
+        self.symbol = "P"  # Distinct symbol for the Provisioner
+        self.has_greens = False  # Tracks if the Provisioner is carrying greens
+
+    def perform_task(self):
+        """
+        Implements a cycle where the Provisioner:
+          1. Moves to the garden to gather greens if not already carrying any.
+          2. Moves to the kitchen to process greens into food units if carrying greens.
+        """
+        if self.task == "Idle":
+            if not self.has_greens:
+                # Need to fetch greens: head to the garden
+                if self.position != self.ship.room_positions["garden"]:
+                    self.path = self.pathfinder.find_path(self.position, self.ship.room_positions["garden"])
+                    self.task = "Going_to_garden"
+                else:
+                    self.gather_greens()
+            else:
+                # Has greens; deliver them to the kitchen
+                if self.position != self.ship.room_positions["kitchen"]:
+                    self.path = self.pathfinder.find_path(self.position, self.ship.room_positions["kitchen"])
+                    self.task = "Going_to_kitchen"
+                else:
+                    self.process_food()
+
+        elif self.task == "Going_to_garden":
+            self.follow_path()
+            if self.position == self.ship.room_positions["garden"]:
+                self.task = "Idle"  # Arrived; next tick will trigger gathering
+
+        elif self.task == "Going_to_kitchen":
+            self.follow_path()
+            if self.position == self.ship.room_positions["kitchen"]:
+                self.task = "Idle"  # Arrived; next tick will trigger processing
+
+    def gather_greens(self):
+        print(f"{self.name} is gathering greens in the garden.")
+        self.has_greens = True
+        self.task = "Idle"
+
+    def process_food(self):
+        print(f"{self.name} is processing greens into food in the kitchen.")
+        self.has_greens = False
+        # Update the ship's food inventory, if applicable.
+        if hasattr(self.ship, "add_food"):
+            self.ship.add_food(5)  # Example: add 5 food units
+        self.task = "Idle"

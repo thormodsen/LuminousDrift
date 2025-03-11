@@ -1,4 +1,4 @@
-from roles import Offduty, Engineer, Medic, Pilot
+from roles import Offduty, Engineer, Medic, Provisioner
 from helperclasses import status_display
 
 class Crew:
@@ -27,7 +27,7 @@ class Crew:
             'o': Offduty,
             'e': Engineer,
             'm': Medic,
-            'p': Pilot
+            'p': Provisioner
         }
         if role_letter in role_map:
             # Assign new class to the crew member
@@ -41,7 +41,7 @@ class Crew:
 
     def count_roles(self):
         """Counts how many crew members are assigned to each role."""
-        role_counts = {"Pilot": 0, "Engineer": 0, "Medic": 0, "Radar Operator": 0, "Researcher": 0}
+        role_counts = {"Provisioner": 0, "Engineer": 0, "Medic": 0, "Radar Operator": 0, "Researcher": 0}
         for member in self.members:
             if member.role in role_counts:
                 role_counts[member.role] += 1

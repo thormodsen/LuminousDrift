@@ -17,8 +17,10 @@ def main(stdscr):
     while True:
         stdscr.clear()
         ship.update()
+
         ship_view.render(stdscr)
         status_view.render(stdscr)
+        
         stdscr.refresh()
 
         key = stdscr.getch()
