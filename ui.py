@@ -54,33 +54,38 @@ class StatusView:
 
 
 class Starfield:
-    def __init__(self, height, width, density=0.015):
+    def __init__(self, height, width, layers=1):
         self.height = height
         self.width = width
-        self.density = density
-        self.stars = []
+        self.layers = []
+        for i in range(layers):
+            layer = {
+                'stars': [],
+                'speed': i+1,
+                'char': ['.', '.', '.'][i],
+                'density': 0.01 * (i + 1)
+            }
+            self.layers.append(layer)
 
     def update(self):
-        # Move stars to the left
-        for star in self.stars:
-            #star[1] -= 1
-            star[0] += 1
-
-        # Remove stars that are off-screen
-        #self.stars = [s for s in self.stars if s[1] >= 0]
-        self.stars = [s for s in self.stars if s[0] <= self.height]
-
-        # Randomly add new stars on the right
-        #for _ in range(int(self.height * self.density)):
-        for _ in range(int(self.width * self.density)):
-            #y = random.randint(0, self.height - 1)
-            #self.stars.append([y, self.width - 1])
-            x = random.randint(0, self.width - 1)
-            self.stars.append([0, x])
+        for layer in self.layers:
+            # Move stars
+            for star in layer['stars']:
+                star[0] += layer['speed']
+            # Remove off-screen stars
+            layer['stars'] = [s for s in layer['stars'] if s[0] <= self.height]
+            # Add new stars
+            for _ in range(int(self.width * layer['density'])):
+                x = random.randint(0, self.width - 1)
+                y = 0
+                layer['stars'].append([y, x])
 
     def render(self, window):
-        for y, x in self.stars:
-            try:
-                window.addstr(y, x, '.', curses.color_pair(0))
-            except curses.error:
-                pass
+        for layer in self.layers:
+            for y, x in layer['stars']:
+                if self.height >= y > 0:
+                    try:
+                        #window.addstr(y, x, layer['char'])
+                        window.addstr(y, x, layer['char'], curses.color_pair(1))
+                    except curses.error:
+                        pass
