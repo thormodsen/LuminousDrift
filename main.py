@@ -1,6 +1,6 @@
 import curses
 from ship import Ship
-from ui import ShipView, StatusView
+from ui import ShipView, StatusView, Starfield
 from helperclasses import status_display
 
 def main(stdscr):
@@ -12,13 +12,24 @@ def main(stdscr):
     ship_view = ShipView(ship)
     status_view = StatusView(ship, status_display)
 
+    # Initialize starfield with the window size
+    height, width = stdscr.getmaxyx()
+    starfield = Starfield(height, width)
+
     status_display.add_message("Game Started")
 
     while True:
         stdscr.clear()
-        ship.update()
 
+        # Update and render starfield
+        starfield.update()
+        starfield.render(stdscr)
+
+        # Update and render ship and crew
+        ship.update()
         ship_view.render(stdscr)
+
+        # Update and render status view
         status_view.render(stdscr)
         
         stdscr.refresh()

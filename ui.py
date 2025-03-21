@@ -1,5 +1,4 @@
 import curses
-import time
 import random
 
 
@@ -14,6 +13,7 @@ class ShipView:
                 window.addstr(base_y + i, base_x, row)
             except curses.error:
                 pass  # Terminal may be too small
+        
         # Render crew members on the ship:
         for member in self.ship.crew.members:
             try:
@@ -51,3 +51,36 @@ class StatusView:
             self.status_display.draw(window, window.getmaxyx()[1] - 50, 1)
         except curses.error:
             pass
+
+
+class Starfield:
+    def __init__(self, height, width, density=0.015):
+        self.height = height
+        self.width = width
+        self.density = density
+        self.stars = []
+
+    def update(self):
+        # Move stars to the left
+        for star in self.stars:
+            #star[1] -= 1
+            star[0] += 1
+
+        # Remove stars that are off-screen
+        #self.stars = [s for s in self.stars if s[1] >= 0]
+        self.stars = [s for s in self.stars if s[0] <= self.height]
+
+        # Randomly add new stars on the right
+        #for _ in range(int(self.height * self.density)):
+        for _ in range(int(self.width * self.density)):
+            #y = random.randint(0, self.height - 1)
+            #self.stars.append([y, self.width - 1])
+            x = random.randint(0, self.width - 1)
+            self.stars.append([0, x])
+
+    def render(self, window):
+        for y, x in self.stars:
+            try:
+                window.addstr(y, x, '.', curses.color_pair(0))
+            except curses.error:
+                pass
