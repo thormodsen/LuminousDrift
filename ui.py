@@ -39,6 +39,11 @@ class StatusView:
                 style = curses.A_BOLD if i == self.ship.crew.selected_index else curses.A_NORMAL
                 window.addstr(pos + 1 + i, 2, f"{marker} {i+1}. {member.name} ({member.role}) - Task: {member.task}", style)
             
+            # Render jump options from travel_system
+            pos += len(self.ship.crew.members) + 3  # Move down the screen
+            self.ship.travel_system.display_jump_options(window, pos)  # Call jump display function
+
+
             # Render the debug log on the right:
             self.status_display.draw(window, window.getmaxyx()[1] - 50, 1)
         except curses.error:

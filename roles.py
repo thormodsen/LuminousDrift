@@ -1,5 +1,5 @@
 from helperclasses import Pathfinding
-from helperclasses import status_display
+import random
 
 class CrewMember:
     def __init__(self, name, role, ship, position):
@@ -111,7 +111,7 @@ class Provisioner(CrewMember):
 
     def gather_greens(self):
         #print(f"{self.name} is gathering greens in the garden.")
-        if self.greens_collected < 10:
+        if self.greens_collected < random.randint(25, 50):
             self.greens_collected += 1
             #status_display.add_message(f"{self.name} collected greens: {self.greens_collected}")
         else:
@@ -120,7 +120,7 @@ class Provisioner(CrewMember):
 
     def process_food(self):
         #print(f"{self.name} is processing greens into food in the kitchen.")
-        if self.greens_collected > 0:
+        if self.greens_collected > random.randint(25, 50):
             self.greens_collected -= 1
             #status_display.add_message(f"{self.name} processed greens: {self.greens_collected}")
         else:
