@@ -1,4 +1,7 @@
 import curses
+import time
+import random
+
 
 class ShipView:
     def __init__(self, ship):
