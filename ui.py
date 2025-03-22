@@ -67,6 +67,15 @@ class Starfield:
             }
             self.layers.append(layer)
 
+            # Pre-fill the screen with stars for this layer
+            num_initial_stars = int(self.height * self.width * layer['density'])
+            for _ in range(num_initial_stars):
+                x = random.randint(0, self.width - 1)
+                y = random.randint(0, self.height - 1)
+                layer['stars'].append([y, x])
+
+            self.layers.append(layer)
+
     def update(self):
         for layer in self.layers:
             # Move stars
